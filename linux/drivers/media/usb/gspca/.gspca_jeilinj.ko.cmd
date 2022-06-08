@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/gspca/gspca_jeilinj.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/gspca/gspca_jeilinj.ko drivers/media/usb/gspca/gspca_jeilinj.o drivers/media/usb/gspca/gspca_jeilinj.mod.o;  true

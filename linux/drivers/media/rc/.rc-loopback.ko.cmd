@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/rc-loopback.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/rc-loopback.ko drivers/media/rc/rc-loopback.o drivers/media/rc/rc-loopback.mod.o;  true

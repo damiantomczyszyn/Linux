@@ -1,0 +1,3 @@
+d include/config/PRINTK_INDEX) \
+    $(wildcard include/config/DYNAMIC_DEBUG) \
+    $(wildcard

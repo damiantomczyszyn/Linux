@@ -1,0 +1,1 @@
+cmd_drivers/mtd/maps/scx200_docflash.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/maps/scx200_docflash.ko drivers/mtd/maps/scx200_docflash.o drivers/mtd/maps/scx200_docflash.mod.o;  true

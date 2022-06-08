@@ -1,0 +1,1 @@
+cmd_drivers/mfd/arizona.o := ld -m elf_i386   -r -o drivers/mfd/arizona.o drivers/mfd/arizona-core.o drivers/mfd/arizona-irq.o drivers/mfd/wm5102-tables.o drivers/mfd/wm5110-tables.o drivers/mfd/wm8997-tables.o

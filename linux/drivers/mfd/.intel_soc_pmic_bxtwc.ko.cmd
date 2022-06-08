@@ -1,0 +1,1 @@
+cmd_drivers/mfd/intel_soc_pmic_bxtwc.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mfd/intel_soc_pmic_bxtwc.ko drivers/mfd/intel_soc_pmic_bxtwc.o drivers/mfd/intel_soc_pmic_bxtwc.mod.o;  true

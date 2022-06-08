@@ -1,0 +1,1 @@
+config/ARCH_WANTS_DYNAMIC_TA

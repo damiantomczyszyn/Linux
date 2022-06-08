@@ -1,0 +1,1 @@
+cmd_drivers/misc/pvpanic/modules.order := {   echo drivers/misc/pvpanic/pvpanic.ko;   echo drivers/misc/pvpanic/pvpanic-mmio.ko;   echo drivers/misc/pvpanic/pvpanic-pci.ko; :; } | awk '!x[$$0]++' - > drivers/misc/pvpanic/modules.order

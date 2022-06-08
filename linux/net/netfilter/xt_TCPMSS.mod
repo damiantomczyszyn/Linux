@@ -1,0 +1,1 @@
+move lock classes from memo

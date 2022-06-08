@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/ir-sharp-decoder.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/ir-sharp-decoder.ko drivers/media/rc/ir-sharp-decoder.o drivers/media/rc/ir-sharp-decoder.mod.o;  true

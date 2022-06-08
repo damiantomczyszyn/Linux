@@ -1,0 +1,1 @@
+cmd_drivers/misc/eeprom/eeprom_93cx6.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/misc/eeprom/eeprom_93cx6.ko drivers/misc/eeprom/eeprom_93cx6.o drivers/misc/eeprom/eeprom_93cx6.mod.o;  true

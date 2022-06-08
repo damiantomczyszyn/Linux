@@ -1,0 +1,1 @@
+cmd_drivers/media/v4l2-core/v4l2-flash-led-class.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/v4l2-core/v4l2-flash-led-class.ko drivers/media/v4l2-core/v4l2-flash-led-class.o drivers/media/v4l2-core/v4l2-flash-led-class.mod.o;  true

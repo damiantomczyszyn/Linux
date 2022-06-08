@@ -1,0 +1,3 @@
+config/ACPI_HOTPLUG_IOAPIC) \
+    $(wildcard include/config/PCI) \
+    $(wil

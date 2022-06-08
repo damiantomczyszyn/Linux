@@ -1,0 +1,84 @@
+(void *)&count, noop_count, NULL, &target_entry);
+
+	return count;
+}
+unsigned long lockdep_count_forward_deps(struct lock_class *class)
+{
+	unsigned long ret, flags;
+	struct lock_list this;
+
+	__bfs_init_root(&this, class);
+
+	raw_local_irq_save(flags);
+	lockdep_lock();
+	ret = __lockdep_count_forward_deps(&this);
+	lockdep_unlock();
+	raw_local_irq_restore(flags);
+
+	return ret;
+}
+
+static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
+{
+	unsigned long  count = 0;
+	struct lock_list *target_entry;
+
+	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
+
+	return count;
+}
+
+unsigned long lockdep_count_backward_deps(struct lock_class *class)
+{
+	unsigned long ret, flags;
+	struct lock_list this;
+
+	__bfs_init_root(&this, class);
+
+	raw_local_irq_save(flags);
+	lockdep_lock();
+	ret = __lockdep_count_backward_deps(&this);
+	lockdep_unlock();
+	raw_local_irq_restore(flags);
+
+	return ret;
+}
+
+/*
+ * Check that the dependency graph starting at <src> can lead to
+ * <target> or not.
+ */
+static noinline enum bfs_result
+check_path(struct held_lock *target, struct lock_list *src_entry,
+	   bool (*match)(struct lock_list *entry, void *data),
+	   bool (*skip)(struct lock_list *entry, void *data),
+	   struct lock_list **target_entry)
+{
+	enum bfs_result ret;
+
+	ret = __bfs_forwards(src_entry, target, match, skip, target_entry);
+
+	if (unlikely(bfs_error(ret)))
+		print_bfs_bug(ret);
+
+	return ret;
+}
+
+/*
+ * Prove that the dependency graph starting at <src> can not
+ * lead to <target>. If it can, there is a circle when adding
+ * <target> -> <src> dependency.
+ *
+ * Print an error and return BFS_RMATCH if it does.
+ */
+static noinline enum bfs_result
+check_noncircular(struct held_lock *src, struct held_lock *target,
+		  struct lock_trace **const trace)
+{
+	enum bfs_result ret;
+	struct lock_list *target_entry;
+	struct lock_list src_entry;
+
+	bfs_init_root(&src_entry, src);
+
+	debug_atomic_

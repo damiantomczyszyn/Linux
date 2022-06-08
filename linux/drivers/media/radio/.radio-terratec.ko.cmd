@@ -1,0 +1,1 @@
+cmd_drivers/media/radio/radio-terratec.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-terratec.ko drivers/media/radio/radio-terratec.o drivers/media/radio/radio-terratec.mod.o;  true

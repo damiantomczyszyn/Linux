@@ -1,0 +1,35 @@
+LE_UPGRADE) \
+    $(wildcard include/config/ACPI_WATCHDOG) \
+    $(wildcard include/config/ACPI_SPCR_TABLE) \
+    $(wildcard include/config/ACPI_GENERIC_GSI) \
+    $(wildcard include/config/ACPI_LPIT) \
+    $(wildcard include/config/ACPI_PPTT) \
+    $(wildcard include/config/ACPI_PCC) \
+  include/linux/errno.h \
+  include/uapi/linux/errno.h \
+  arch/x86/include/generated/uapi/asm/errno.h \
+  include/uapi/asm-generic/errno.h \
+  include/uapi/asm-generic/errno-base.h \
+  include/linux/ioport.h \
+    $(wildcard include/config/MEMORY_HOTREMOVE) \
+    $(wildcard include/config/MEMORY_HOTPLUG) \
+  include/linux/bits.h \
+  include/linux/const.h \
+  include/vdso/const.h \
+  include/uapi/linux/const.h \
+  include/vdso/bits.h \
+  arch/x86/include/uapi/asm/bitsperlong.h \
+  include/asm-generic/bitsperlong.h \
+    $(wildcard include/config/64BIT) \
+  include/uapi/asm-generic/bitsperlong.h \
+  include/linux/build_bug.h \
+  include/linux/compiler.h \
+    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
+    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
+    $(wildcard include/config/STACK_VALIDATION) \
+    $(wildcard include/config/CFI_CLANG) \
+  include/linux/compiler_types.h \
+  arch/x86/include/generated/asm/rwonce.h \
+  include/asm-generic/rwonce.h \
+  include/linux/kasan-checks.h \
+    $(wildcard include/

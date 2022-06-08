@@ -1,0 +1,1 @@
+cmd_drivers/mfd/rdc321x-southbridge.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mfd/rdc321x-southbridge.ko drivers/mfd/rdc321x-southbridge.o drivers/mfd/rdc321x-southbridge.mod.o;  true

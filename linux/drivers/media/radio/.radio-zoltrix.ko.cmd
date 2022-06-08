@@ -1,0 +1,1 @@
+cmd_drivers/media/radio/radio-zoltrix.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-zoltrix.ko drivers/media/radio/radio-zoltrix.o drivers/media/radio/radio-zoltrix.mod.o;  true

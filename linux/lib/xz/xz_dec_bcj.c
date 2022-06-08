@@ -1,0 +1,569 @@
+k.hardirqs_off = true;
+			hlock.references = 0;
+
+			verify_lock_unused(lock, &hlock, subclass);
+		}
+		return;
+	}
+
+	raw_local_irq_save(flags);
+	check_flags(flags);
+
+	lockdep_recursion_inc();
+	__lock_acquire(lock, subclass, trylock, read, check,
+		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
+	lockdep_recursion_finish();
+	raw_local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(lock_acquire);
+
+void lock_release(struct lockdep_map *lock, unsigned long ip)
+{
+	unsigned long flags;
+
+	trace_lock_release(lock, ip);
+
+	if (unlikely(!lockdep_enabled()))
+		return;
+
+	raw_local_irq_save(flags);
+	check_flags(flags);
+
+	lockdep_recursion_inc();
+	if (__lock_release(lock, ip))
+		check_chain_key(current);
+	lockdep_recursion_finish();
+	raw_local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(lock_release);
+
+noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
+{
+	unsigned long flags;
+	int ret = LOCK_STATE_NOT_HELD;
+
+	/*
+	 * Avoid false negative lockdep_assert_held() and
+	 * lockdep_assert_not_held().
+	 */
+	if (unlikely(!lockdep_enabled()))
+		return LOCK_STATE_UNKNOWN;
+
+	raw_local_irq_save(flags);
+	check_flags(flags);
+
+	lockdep_recursion_inc();
+	ret = __lock_is_held(lock, read);
+	lockdep_recursion_finish();
+	raw_local_irq_restore(flags);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(lock_is_held_type);
+NOKPROBE_SYMBOL(lock_is_held_type);
+
+struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
+{
+	struct pin_cookie cookie = NIL_COOKIE;
+	unsigned long flags;
+
+	if (unlikely(!lockdep_enabled()))
+		return cookie;
+
+	raw_local_irq_save(flags);
+	check_flags(flags);
+
+	lockdep_recursion_inc();
+	cookie = __lock_pin_lock(lock);
+	lockdep_recursion_finish();
+	raw_local_irq_restore(flags);
+
+	return cookie;
+}
+EXPORT_SYMBOL_GPL(lock_pin_lock);
+
+void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
+{
+	unsigned long flags;
+
+	if (unlikely(!lockdep_enabled()))
+		return;
+
+	raw_local_irq_save(flags);
+	check_flags(flags);
+
+	lockdep_recursion_inc();
+	__lock_repin_lock(lock, cookie);
+	lockdep_recursion_finish();
+	raw_local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(lock_repin_lock);
+
+void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
+{
+	unsigned long flags;
+
+	if (unlikely(!lockdep_enabled()))
+		return;
+
+	raw_local_irq_save(flags);
+	check_flags(flags);
+
+	lockdep_recursion_inc();
+	__lock_unpin_lock(lock, cookie);
+	lockdep_recursion_finish();
+	raw_local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(lock_unpin_lock);
+
+#ifdef CONFIG_LOCK_STAT
+static void print_lock_contention_bug(struct task_struct *curr,
+				      struct lockdep_map *lock,
+				      unsigned long ip)
+{
+	if (!debug_locks_off())
+		return;
+	if (debug_locks_silent)
+		return;
+
+	pr_warn("\n");
+	pr_warn("=================================\n");
+	pr_warn("WARNING: bad contention detected!\n");
+	print_kernel_ident();
+	pr_warn("---------------------------------\n");
+	pr_warn("%s/%d is trying to contend lock (",
+		curr->comm, task_pid_nr(curr));
+	print_lockdep_cache(lock);
+	pr_cont(") at:\n");
+	print_ip_sym(KERN_WARNING, ip);
+	pr_warn("but there are no locks held!\n");
+	pr_warn("\nother info that might help us debug this:\n");
+	lockdep_print_held_locks(curr);
+
+	pr_warn("\nstack backtrace:\n");
+	dump_stack();
+}
+
+static void
+__lock_contended(struct lockdep_map *lock, unsigned long ip)
+{
+	struct task_struct *curr = current;
+	struct held_lock *hlock;
+	struct lock_class_stats *stats;
+	unsigned int depth;
+	int i, contention_point, contending_point;
+
+	depth = curr->lockdep_depth;
+	/*
+	 * Whee, we contended on this lock, except it seems we're not
+	 * actually trying to acquire anything much at all..
+	 */
+	if (DEBUG_LOCKS_WARN_ON(!depth))
+		return;
+
+	hlock = find_held_lock(curr, lock, depth, &i);
+	if (!hlock) {
+		print_lock_contention_bug(curr, lock, ip);
+		return;
+	}
+
+	if (hlock->instance != lock)
+		return;
+
+	hlock->waittime_stamp = lockstat_clock();
+
+	contention_point = lock_point(hlock_class(hlock)->contention_point, ip);
+	contending_point = lock_point(hlock_class(hlock)->contending_point,
+				      lock->ip);
+
+	stats = get_lock_stats(hlock_class(hlock));
+	if (contention_point < LOCKSTAT_POINTS)
+		stats->contention_point[contention_point]++;
+	if (contending_point < LOCKSTAT_POINTS)
+		stats->contending_point[contending_point]++;
+	if (lock->cpu != smp_processor_id())
+		stats->bounces[bounce_contended + !!hlock->read]++;
+}
+
+static void
+__lock_acquired(struct lockdep_map *lock, unsigned long ip)
+{
+	struct task_struct *curr = current;
+	struct held_lock *hlock;
+	struct lock_class_stats *stats;
+	unsigned int depth;
+	u64 now, waittime = 0;
+	int i, cpu;
+
+	depth = curr->lockdep_depth;
+	/*
+	 * Yay, we acquired ownership of this lock we didn't try to
+	 * acquire, how the heck did that happen?
+	 */
+	if (DEBUG_LOCKS_WARN_ON(!depth))
+		return;
+
+	hlock = find_held_lock(curr, lock, depth, &i);
+	if (!hlock) {
+		print_lock_contention_bug(curr, lock, _RET_IP_);
+		return;
+	}
+
+	if (hlock->instance != lock)
+		return;
+
+	cpu = smp_processor_id();
+	if (hlock->waittime_stamp) {
+		now = lockstat_clock();
+		waittime = now - hlock->waittime_stamp;
+		hlock->holdtime_stamp = now;
+	}
+
+	stats = get_lock_stats(hlock_class(hlock));
+	if (waittime) {
+		if (hlock->read)
+			lock_time_inc(&stats->read_waittime, waittime);
+		else
+			lock_time_inc(&stats->write_waittime, waittime);
+	}
+	if (lock->cpu != cpu)
+		stats->bounces[bounce_acquired + !!hlock->read]++;
+
+	lock->cpu = cpu;
+	lock->ip = ip;
+}
+
+void lock_contended(struct lockdep_map *lock, unsigned long ip)
+{
+	unsigned long flags;
+
+	trace_lock_contended(lock, ip);
+
+	if (unlikely(!lock_stat || !lockdep_enabled()))
+		return;
+
+	raw_local_irq_save(flags);
+	check_flags(flags);
+	lockdep_recursion_inc();
+	__lock_contended(lock, ip);
+	lockdep_recursion_finish();
+	raw_local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(lock_contended);
+
+void lock_acquired(struct lockdep_map *lock, unsigned long ip)
+{
+	unsigned long flags;
+
+	trace_lock_acquired(lock, ip);
+
+	if (unlikely(!lock_stat || !lockdep_enabled()))
+		return;
+
+	raw_local_irq_save(flags);
+	check_flags(flags);
+	lockdep_recursion_inc();
+	__lock_acquired(lock, ip);
+	lockdep_recursion_finish();
+	raw_local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(lock_acquired);
+#endif
+
+/*
+ * Used by the testsuite, sanitize the validator state
+ * after a simulated failure:
+ */
+
+void lockdep_reset(void)
+{
+	unsigned long flags;
+	int i;
+
+	raw_local_irq_save(flags);
+	lockdep_init_task(current);
+	memset(current->held_locks, 0, MAX_LOCK_DEPTH*sizeof(struct held_lock));
+	nr_hardirq_chains = 0;
+	nr_softirq_chains = 0;
+	nr_process_chains = 0;
+	debug_locks = 1;
+	for (i = 0; i < CHAINHASH_SIZE; i++)
+		INIT_HLIST_HEAD(chainhash_table + i);
+	raw_local_irq_restore(flags);
+}
+
+/* Remove a class from a lock chain. Must be called with the graph lock held. */
+static void remove_class_from_lock_chain(struct pending_free *pf,
+					 struct lock_chain *chain,
+					 struct lock_class *class)
+{
+#ifdef CONFIG_PROVE_LOCKING
+	int i;
+
+	for (i = chain->base; i < chain->base + chain->depth; i++) {
+		if (chain_hlock_class_idx(chain_hlocks[i]) != class - lock_classes)
+			continue;
+		/*
+		 * Each lock class occurs at most once in a lock chain so once
+		 * we found a match we can break out of this loop.
+		 */
+		goto free_lock_chain;
+	}
+	/* Since the chain has not been modified, return. */
+	return;
+
+free_lock_chain:
+	free_chain_hlocks(chain->base, chain->depth);
+	/* Overwrite the chain key for concurrent RCU readers. */
+	WRITE_ONCE(chain->chain_key, INITIAL_CHAIN_KEY);
+	dec_chains(chain->irq_context);
+
+	/*
+	 * Note: calling hlist_del_rcu() from inside a
+	 * hlist_for_each_entry_rcu() loop is safe.
+	 */
+	hlist_del_rcu(&chain->entry);
+	__set_bit(chain - lock_chains, pf->lock_chains_being_freed);
+	nr_zapped_lock_chains++;
+#endif
+}
+
+/* Must be called with the graph lock held. */
+static void remove_class_from_lock_chains(struct pending_free *pf,
+					  struct lock_class *class)
+{
+	struct lock_chain *chain;
+	struct hlist_head *head;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
+		head = chainhash_table + i;
+		hlist_for_each_entry_rcu(chain, head, entry) {
+			remove_class_from_lock_chain(pf, chain, class);
+		}
+	}
+}
+
+/*
+ * Remove all references to a lock class. The caller must hold the graph lock.
+ */
+static void zap_class(struct pending_free *pf, struct lock_class *class)
+{
+	struct lock_list *entry;
+	int i;
+
+	WARN_ON_ONCE(!class->key);
+
+	/*
+	 * Remove all dependencies this lock is
+	 * involved in:
+	 */
+	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
+		entry = list_entries + i;
+		if (entry->class != class && entry->links_to != class)
+			continue;
+		__clear_bit(i, list_entries_in_use);
+		nr_list_entries--;
+		list_del_rcu(&entry->entry);
+	}
+	if (list_empty(&class->locks_after) &&
+	    list_empty(&class->locks_before)) {
+		list_move_tail(&class->lock_entry, &pf->zapped);
+		hlist_del_rcu(&class->hash_entry);
+		WRITE_ONCE(class->key, NULL);
+		WRITE_ONCE(class->name, NULL);
+		nr_lock_classes--;
+		__clear_bit(class - lock_classes, lock_classes_in_use);
+		if (class - lock_classes == max_lock_class_idx)
+			max_lock_class_idx--;
+	} else {
+		WARN_ONCE(true, "%s() failed for class %s\n", __func__,
+			  class->name);
+	}
+
+	remove_class_from_lock_chains(pf, class);
+	nr_zapped_classes++;
+}
+
+static void reinit_class(struct lock_class *class)
+{
+	WARN_ON_ONCE(!class->lock_entry.next);
+	WARN_ON_ONCE(!list_empty(&class->locks_after));
+	WARN_ON_ONCE(!list_empty(&class->locks_before));
+	memset_startat(class, 0, key);
+	WARN_ON_ONCE(!class->lock_entry.next);
+	WARN_ON_ONCE(!list_empty(&class->locks_after));
+	WARN_ON_ONCE(!list_empty(&class->locks_before));
+}
+
+static inline int within(const void *addr, void *start, unsigned long size)
+{
+	return addr >= start && addr < start + size;
+}
+
+static bool inside_selftest(void)
+{
+	return current == lockdep_selftest_task_struct;
+}
+
+/* The caller must hold the graph lock. */
+static struct pending_free *get_pending_free(void)
+{
+	return delayed_free.pf + delayed_free.index;
+}
+
+static void free_zapped_rcu(struct rcu_head *cb);
+
+/*
+ * Schedule an RCU callback if no RCU callback is pending. Must be called with
+ * the graph lock held.
+ */
+static void call_rcu_zapped(struct pending_free *pf)
+{
+	WARN_ON_ONCE(inside_selftest());
+
+	if (list_empty(&pf->zapped))
+		return;
+
+	if (delayed_free.scheduled)
+		return;
+
+	delayed_free.scheduled = true;
+
+	WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
+	delayed_free.index ^= 1;
+
+	call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
+}
+
+/* The caller must hold the graph lock. May be called from RCU context. */
+static void __free_zapped_classes(struct pending_free *pf)
+{
+	struct lock_class *class;
+
+	check_data_structures();
+
+	list_for_each_entry(class, &pf->zapped, lock_entry)
+		reinit_class(class);
+
+	list_splice_init(&pf->zapped, &free_lock_classes);
+
+#ifdef CONFIG_PROVE_LOCKING
+	bitmap_andnot(lock_chains_in_use, lock_chains_in_use,
+		      pf->lock_chains_being_freed, ARRAY_SIZE(lock_chains));
+	bitmap_clear(pf->lock_chains_being_freed, 0, ARRAY_SIZE(lock_chains));
+#endif
+}
+
+static void free_zapped_rcu(struct rcu_head *ch)
+{
+	struct pending_free *pf;
+	unsigned long flags;
+
+	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
+		return;
+
+	raw_local_irq_save(flags);
+	lockdep_lock();
+
+	/* closed head */
+	pf = delayed_free.pf + (delayed_free.index ^ 1);
+	__free_zapped_classes(pf);
+	delayed_free.scheduled = false;
+
+	/*
+	 * If there's anything on the open list, close and start a new callback.
+	 */
+	call_rcu_zapped(delayed_free.pf + delayed_free.index);
+
+	lockdep_unlock();
+	raw_local_irq_restore(flags);
+}
+
+/*
+ * Remove all lock classes from the class hash table and from the
+ * all_lock_classes list whose key or name is in the address range [start,
+ * start + size). Move these lock classes to the zapped_classes list. Must
+ * be called with the graph lock held.
+ */
+static void __lockdep_free_key_range(struct pending_free *pf, void *start,
+				     unsigned long size)
+{
+	struct lock_class *class;
+	struct hlist_head *head;
+	int i;
+
+	/* Unhash all classes that were created by a module. */
+	for (i = 0; i < CLASSHASH_SIZE; i++) {
+		head = classhash_table + i;
+		hlist_for_each_entry_rcu(class, head, hash_entry) {
+			if (!within(class->key, start, size) &&
+			    !within(class->name, start, size))
+				continue;
+			zap_class(pf, class);
+		}
+	}
+}
+
+/*
+ * Used in module.c to remove lock classes from memory that is going to be
+ * freed; and possibly re-used by other modules.
+ *
+ * We will have had one synchronize_rcu() before getting here, so we're
+ * guaranteed nobody will look up these exact classes -- they're properly dead
+ * but still allocated.
+ */
+static void lockdep_free_key_range_reg(void *start, unsigned long size)
+{
+	struct pending_free *pf;
+	unsigned long flags;
+
+	init_data_structures_once();
+
+	raw_local_irq_save(flags);
+	lockdep_lock();
+	pf = get_pending_free();
+	__lockdep_free_key_range(pf, start, size);
+	call_rcu_zapped(pf);
+	lockdep_unlock();
+	raw_local_irq_restore(flags);
+
+	/*
+	 * Wait for any possible iterators from look_up_lock_class() to pass
+	 * before continuing to free the memory they refer to.
+	 */
+	synchronize_rcu();
+}
+
+/*
+ * Free all lockdep keys in the range [start, start+size). Does not sleep.
+ * Ignores debug_locks. Must only be used by the lockdep selftests.
+ */
+static void lockdep_free_key_range_imm(void *start, unsigned long size)
+{
+	struct pending_free *pf = delayed_free.pf;
+	unsigned long flags;
+
+	init_data_structures_once();
+
+	raw_local_irq_save(flags);
+	lockdep_lock();
+	__lockdep_free_key_range(pf, start, size);
+	__free_zapped_classes(pf);
+	lockdep_unlock();
+	raw_local_irq_restore(flags);
+}
+
+void lockdep_free_key_range(void *start, unsigned long size)
+{
+	init_data_structures_once();
+
+	if (inside_selftest())
+		lockdep_free_key_range_imm(start, size);
+	else
+		lockdep_free_key_range_reg(start, size);
+}
+
+/*
+ * Check whether any element of the @lock->class_cache[] array refers to a
+ * registered lock class. The caller must hold either

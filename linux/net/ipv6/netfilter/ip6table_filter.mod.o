@@ -1,0 +1,54 @@
+ -> @hlock and @hlock -> <whatever __bfs() found> is not -(*R)->
+ * and -(S*)->.
+ */
+static inline void bfs_init_root(struct lock_list *lock,
+				 struct held_lock *hlock)
+{
+	__bfs_init_root(lock, hlock_class(hlock));
+	lock->only_xr = (hlock->read == 2);
+}
+
+/*
+ * Similar to bfs_init_root() but initialize the root for backwards BFS.
+ *
+ * ->only_xr of the initial lock node is set to @hlock->read != 0, to make sure
+ * that <next> -> @hlock and @hlock -> <whatever backwards BFS found> is not
+ * -(*S)-> and -(R*)-> (reverse order of -(*R)-> and -(S*)->).
+ */
+static inline void bfs_init_rootb(struct lock_list *lock,
+				  struct held_lock *hlock)
+{
+	__bfs_init_root(lock, hlock_class(hlock));
+	lock->only_xr = (hlock->read != 0);
+}
+
+static inline struct lock_list *__bfs_next(struct lock_list *lock, int offset)
+{
+	if (!lock || !lock->parent)
+		return NULL;
+
+	return list_next_or_null_rcu(get_dep_list(lock->parent, offset),
+				     &lock->entry, struct lock_list, entry);
+}
+
+/*
+ * Breadth-First Search to find a strong path in the dependency graph.
+ *
+ * @source_entry: the source of the path we are searching for.
+ * @data: data used for the second parameter of @match function
+ * @match: match function for the search
+ * @target_entry: pointer to the target of a matched path
+ * @offset: the offset to struct lock_class to determine whether it is
+ *          locks_after or locks_before
+ *
+ * We may have multiple edges (considering different kinds of dependencies,
+ * e.g. ER and SN) between two nodes in the dependency graph. But
+ * only the strong dependency path in the graph is relevant to deadlocks. A
+ * strong dependency path is a dependency path that doesn't have two adjacent
+ * dependencies as -(*R)-> -(S*)->, please see:
+ *
+ *         Documentation/locking/lockdep-design.rst
+ *
+ * for more explanation of the definition of strong dependency paths
+ *
+ * In __bfs(), we only traverse in the st

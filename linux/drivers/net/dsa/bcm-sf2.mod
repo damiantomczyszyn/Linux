@@ -1,0 +1,1 @@
+cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/

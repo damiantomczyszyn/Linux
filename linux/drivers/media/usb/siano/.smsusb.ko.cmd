@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/siano/smsusb.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/siano/smsusb.ko drivers/media/usb/siano/smsusb.o drivers/media/usb/siano/smsusb.mod.o;  true

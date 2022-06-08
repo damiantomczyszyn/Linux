@@ -1,0 +1,48 @@
+x86/include/uapi/asm/auxvec.h \
+  include/linux/kref.h \
+  include/linux/refcount.h \
+  include/linux/rwsem.h \
+    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
+    $(wildcard include/config/DEBUG_RWSEMS) \
+  include/linux/completion.h \
+  include/linux/swait.h \
+  include/linux/wait.h \
+  include/uapi/linux/wait.h \
+  include/linux/uprobes.h \
+    $(wildcard include/config/UPROBES) \
+  arch/x86/include/asm/uprobes.h \
+  include/linux/notifier.h \
+    $(wildcard include/config/TREE_SRCU) \
+  include/linux/srcu.h \
+    $(wildcard include/config/TINY_SRCU) \
+    $(wildcard include/config/SRCU) \
+  include/linux/rcu_segcblist.h \
+  include/linux/srcutree.h \
+  include/linux/rcu_node_tree.h \
+    $(wildcard include/config/RCU_FANOUT) \
+    $(wildcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+  include/generated/bounds.h \
+  arch/x86/include/asm/mmu.h \
+    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
+  include/linux/module.h \
+    $(wildcard include/config/MODULES_TREE_LOOKUP) \
+    $(wildcard include/config/LIVEPATCH) \
+    $(wildcard include/config/STACKTRACE_BUILD_ID) \
+    $(wildcard include/config/MODULE_SIG) \
+    $(wildcard include/config/KALLSYMS) \
+    $(wildcard include/config/BPF_EVENTS) \
+    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
+    $(wildcard include/config/EVENT_TRACING) \
+    $(wildcard include/config/MODULE_UNLOAD) \
+    $(wildcard include/config/CONSTRUCTORS) \
+  include/linux/stat.h \
+  arch/x86/include/uapi/asm/stat.h \
+  include/uapi/linux/stat.h \
+  include/linux/uidgid.h \
+    $(wildcard include/config/MULTIUSER) \
+    $(wildcard include/config/USER_NS) \
+  include/linux/highuid.h \
+  include/linux/buildid.h \
+    $(wildcard include/co

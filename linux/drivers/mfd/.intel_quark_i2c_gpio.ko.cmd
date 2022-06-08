@@ -1,0 +1,1 @@
+cmd_drivers/mfd/intel_quark_i2c_gpio.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mfd/intel_quark_i2c_gpio.ko drivers/mfd/intel_quark_i2c_gpio.o drivers/mfd/intel_quark_i2c_gpio.mod.o;  true

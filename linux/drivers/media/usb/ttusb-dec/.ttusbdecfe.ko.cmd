@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/ttusb-dec/ttusbdecfe.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/ttusb-dec/ttusbdecfe.ko drivers/media/usb/ttusb-dec/ttusbdecfe.o drivers/media/usb/ttusb-dec/ttusbdecfe.mod.o;  true

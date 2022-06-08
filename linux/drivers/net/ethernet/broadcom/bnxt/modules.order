@@ -1,0 +1,2 @@
+d include/config/SCHED_SMT) \
+    $(wildcard i

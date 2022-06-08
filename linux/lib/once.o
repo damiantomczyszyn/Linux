@@ -1,0 +1,92 @@
+p_next_lockchain(long i);
+unsigned long lock_chain_count(void);
+extern unsigned long nr_stack_trace_entries;
+
+extern unsigned int nr_hardirq_chains;
+extern unsigned int nr_softirq_chains;
+extern unsigned int nr_process_chains;
+extern unsigned int nr_free_chain_hlocks;
+extern unsigned int nr_lost_chain_hlocks;
+extern unsigned int nr_large_chain_blocks;
+
+extern unsigned int max_lockdep_depth;
+extern unsigned int max_bfs_queue_depth;
+extern unsigned long max_lock_class_idx;
+
+extern struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
+extern unsigned long lock_classes_in_use[];
+
+#ifdef CONFIG_PROVE_LOCKING
+extern unsigned long lockdep_count_forward_deps(struct lock_class *);
+extern unsigned long lockdep_count_backward_deps(struct lock_class *);
+#ifdef CONFIG_TRACE_IRQFLAGS
+u64 lockdep_stack_trace_count(void);
+u64 lockdep_stack_hash_count(void);
+#endif
+#else
+static inline unsigned long
+lockdep_count_forward_deps(struct lock_class *class)
+{
+	return 0;
+}
+static inline unsigned long
+lockdep_count_backward_deps(struct lock_class *class)
+{
+	return 0;
+}
+#endif
+
+#ifdef CONFIG_DEBUG_LOCKDEP
+
+#include <asm/local.h>
+/*
+ * Various lockdep statistics.
+ * We want them per cpu as they are often accessed in fast path
+ * and we want to avoid too much cache bouncing.
+ */
+struct lockdep_stats {
+	unsigned long  chain_lookup_hits;
+	unsigned int   chain_lookup_misses;
+	unsigned long  hardirqs_on_events;
+	unsigned long  hardirqs_off_events;
+	unsigned long  redundant_hardirqs_on;
+	unsigned long  redundant_hardirqs_off;
+	unsigned long  softirqs_on_events;
+	unsigned long  softirqs_off_events;
+	unsigned long  redundant_softirqs_on;
+	unsigned long  redundant_softirqs_off;
+	int            nr_unused_locks;
+	unsigned int   nr_redundant_checks;
+	unsigned int   nr_redundant;
+	unsigned int   nr_cyclic_checks;
+	unsigned int   nr_find_usage_forwards_checks;
+	unsigned int   nr_find_usage_backwards_checks;
+
+	/*
+	 * Per lock class locking operation stat counts
+	 */
+	unsigned long lock_class_ops[MAX_LOCKDEP_KEYS];
+};
+
+DECLARE_PER_CPU(struct lockdep_stats, lockdep_stats);
+
+#define __debug_atomic_inc(ptr)					\
+	this_cpu_inc(lockdep_stats.ptr);
+
+#define debug_atomic_inc(ptr)			{		\
+	WARN_ON_ONCE(!irqs_disabled());				\
+	__this_cpu_inc(lockdep_stats.ptr);			\
+}
+
+#define debug_atomic_dec(ptr)			{		\
+	WARN_ON_ONCE(!irqs_disabled());				\
+	__this_cpu_dec(lockdep_stats.ptr);			\
+}
+
+#define debug_atomic_read(ptr)		({				\
+	struct lockdep_stats *__cpu_lockdep_stats;			\
+	unsigned long long __total = 0;					\
+	int __cpu;							\
+	for_each_possible_cpu(__cpu) {					\
+		__cpu_lockdep_stats = &per_cpu(lockdep_stats, __cpu);	\
+		__total += __cpu_loc

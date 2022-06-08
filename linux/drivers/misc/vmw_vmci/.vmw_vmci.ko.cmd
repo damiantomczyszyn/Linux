@@ -1,0 +1,1 @@
+cmd_drivers/misc/vmw_vmci/vmw_vmci.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/misc/vmw_vmci/vmw_vmci.ko drivers/misc/vmw_vmci/vmw_vmci.o drivers/misc/vmw_vmci/vmw_vmci.mod.o;  true

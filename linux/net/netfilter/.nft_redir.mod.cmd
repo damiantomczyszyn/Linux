@@ -1,0 +1,1 @@
+cmd_kernel/irq/cpuhotplug.o := gcc -Wp,-MMD,kernel/irq/.cpuhotplug.o.d -nostdinc -I./arch/x86/include -I./arc

@@ -1,0 +1,1 @@
+(int offset, int next, int bucket,

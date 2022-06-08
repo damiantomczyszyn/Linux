@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/igorplugusb.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/igorplugusb.ko drivers/media/rc/igorplugusb.o drivers/media/rc/igorplugusb.mod.o;  true

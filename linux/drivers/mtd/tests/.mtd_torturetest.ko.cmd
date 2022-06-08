@@ -1,0 +1,1 @@
+cmd_drivers/mtd/tests/mtd_torturetest.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/tests/mtd_torturetest.ko drivers/mtd/tests/mtd_torturetest.o drivers/mtd/tests/mtd_torturetest.mod.o;  true

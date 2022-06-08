@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-em-terratec.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-em-terratec.ko drivers/media/rc/keymaps/rc-em-terratec.o drivers/media/rc/keymaps/rc-em-terratec.mod.o;  true

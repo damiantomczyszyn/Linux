@@ -1,0 +1,1 @@
+cmd_drivers/media/tuners/tda18271.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/tuners/tda18271.ko drivers/media/tuners/tda18271.o drivers/media/tuners/tda18271.mod.o;  true

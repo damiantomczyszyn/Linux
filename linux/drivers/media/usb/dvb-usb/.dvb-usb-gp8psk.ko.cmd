@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/dvb-usb/dvb-usb-gp8psk.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/dvb-usb/dvb-usb-gp8psk.ko drivers/media/usb/dvb-usb/dvb-usb-gp8psk.o drivers/media/usb/dvb-usb/dvb-usb-gp8psk.mod.o;  true

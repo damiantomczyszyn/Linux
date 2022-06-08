@@ -1,0 +1,1 @@
+ard include/config/ACPI_APEI_GHES)

@@ -1,0 +1,9 @@
+drivers/mtd/tests/mtd_oobtest.ko
+drivers/mtd/tests/mtd_pagetest.ko
+drivers/mtd/tests/mtd_readtest.ko
+drivers/mtd/tests/mtd_speedtest.ko
+drivers/mtd/tests/mtd_stresstest.ko
+drivers/mtd/tests/mtd_subpagetest.ko
+drivers/mtd/tests/mtd_torturetest.ko
+drivers/mtd/tests/mtd_nandecctest.ko
+drivers/mtd/tests/mtd_nandbiterrs.ko

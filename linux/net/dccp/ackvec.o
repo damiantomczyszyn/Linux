@@ -1,0 +1,111 @@
+x/cgroupstats.h \
+  include/uapi/linux/taskstats.h \
+  include/linux/fs.h \
+    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
+    $(wildcard include/config/FS_POSIX_ACL) \
+    $(wildcard include/config/CGROUP_WRITEBACK) \
+    $(wildcard include/config/IMA) \
+    $(wildcard include/config/FILE_LOCKING) \
+    $(wildcard include/config/FSNOTIFY) \
+    $(wildcard include/config/FS_ENCRYPTION) \
+    $(wildcard include/config/FS_VERITY) \
+    $(wildcard include/config/EPOLL) \
+    $(wildcard include/config/UNICODE) \
+    $(wildcard include/config/QUOTA) \
+    $(wildcard include/config/FS_DAX) \
+    $(wildcard include/config/BLOCK) \
+    $(wildcard include/config/MIGRATION) \
+  include/linux/wait_bit.h \
+  include/linux/kdev_t.h \
+  include/uapi/linux/kdev_t.h \
+  include/linux/dcache.h \
+  include/linux/rculist_bl.h \
+  include/linux/list_bl.h \
+  include/linux/bit_spinlock.h \
+  include/linux/lockref.h \
+    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
+  include/generated/bounds.h \
+  include/linux/stringhash.h \
+    $(wildcard include/config/DCACHE_WORD_ACCESS) \
+  include/linux/hash.h \
+    $(wildcard include/config/HAVE_ARCH_HASH) \
+  include/linux/path.h \
+  include/linux/stat.h \
+  arch/x86/include/uapi/asm/stat.h \
+  include/uapi/linux/stat.h \
+  include/linux/list_lru.h \
+    $(wildcard include/config/MEMCG_KMEM) \
+  include/linux/shrinker.h \
+  include/linux/xarray.h \
+    $(wildcard include/config/XARRAY_MULTI) \
+  include/linux/gfp.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+    $(wildcard include/config/ZONE_DMA) \
+    $(wildcard include/config/ZONE_DMA32) \
+    $(wildcard include/config/ZONE_DEVICE) \
+    $(wildcard include/config/PM_SLEEP) \
+    $(wildcard include/config/CONTIG_ALLOC) \
+    $(wildcard include/config/CMA) \
+  include/linux/mmzone.h \
+    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
+    $(wildcard include/config/MEMORY_ISOLATION) \
+    $(wildcard include/config/ZSMALLOC) \
+    $(wildcard include/config/SWAP) \
+    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
+    $(wildcard include/config/MEMORY_HOTPLUG) \
+    $(wildcard include/config/PAGE_EXTENSION) \
+    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
+    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
+    $(wildcard include/config/SPARSEMEM_EXTREME) \
+    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
+  include/linux/pageblock-flags.h \
+    $(wildcard include/config/HUGETLB_PAGE) \
+    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
+  include/linux/page-flags-layout.h \
+  include/linux/mm_types.h \
+    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
+    $(wildcard include/config/USERFAULTFD) \
+    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
+    $(wildcard include/config/MEMBARRIER) \
+    $(wildcard include/config/AIO) \
+    $(wildcard include/config/MMU_NOTIFIER) \
+  include/linux/auxvec.h \
+  include/uapi/linux/auxvec.h \
+  arch/x86/include/uapi/asm/auxvec.h \
+  include/linux/kref.h \
+  include/linux/rwsem.h \
+    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
+    $(wildcard include/config/DEBUG_RWSEMS) \
+  include/linux/completion.h \
+  include/linux/swait.h \
+  include/linux/uprobes.h \
+  arch/x86/include/asm/uprobes.h \
+  include/linux/notifier.h \
+    $(wildcard include/config/TREE_SRCU) \
+  include/linux/srcu.h \
+    $(wildcard include/config/TINY_SRCU) \
+    $(wildcard include/config/SRCU) \
+  include/linux/rcu_segcblist.h \
+  include/linux/srcutree.h \
+  include/linux/rcu_node_tree.h \
+    $(wildcard include/config/RCU_FANOUT) \
+    $(wildcard include/config/RCU_FANOUT_LEAF) \
+  arch/x86/include/asm/mmu.h \
+    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
+  include/linux/page-flags.h \
+    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
+    $(wildcard include/config/MEMORY_FAILURE) \
+    $(wildcard include/config/PAGE_IDLE_FLAG) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
+    $(wildcard include/config/KSM) \
+  include/linux/local_lock.h \
+  include/linux/local_lock_internal.h \cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9903"' -DKBUILD_MODNAME='"tw9903"' -D__KBUILD_MODNAME=kmod_tw9903 -c -o drivers/media/i2c/tw9903.o drivers/media/i2c/tw9903.c 
+
+source_drivers/media/i2c/tw9903.o := drivers/media/i2c/tw9903.c
+
+deps_drivers/media/i2c/tw9903.o := \
+  include/linux/compiler-version.h \
+    $(wildcard include/config/CC_VERSION_TEXT) \
+  include/linux/kconfig.h \
+    $(wildcard include/config/CPU_B

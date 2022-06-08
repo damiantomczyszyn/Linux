@@ -1,0 +1,1 @@
+cmd_drivers/mfd/ti_am335x_tscadc.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mfd/ti_am335x_tscadc.ko drivers/mfd/ti_am335x_tscadc.o drivers/mfd/ti_am335x_tscadc.mod.o;  true

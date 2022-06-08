@@ -1,0 +1,3 @@
+drivers/misc/pvpanic/pvpanic.ko
+drivers/misc/pvpanic/pvpanic-mmio.ko
+drivers/misc/pvpanic/pvpanic-pci.ko

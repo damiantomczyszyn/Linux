@@ -1,0 +1,1 @@
+atic inline int check

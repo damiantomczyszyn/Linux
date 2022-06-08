@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-eztv.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-eztv.ko drivers/media/rc/keymaps/rc-eztv.o drivers/media/rc/keymaps/rc-eztv.mod.o;  true

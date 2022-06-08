@@ -1,0 +1,1 @@
+cmd_drivers/misc/pvpanic/pvpanic-mmio.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/misc/pvpanic/pvpanic-mmio.ko drivers/misc/pvpanic/pvpanic-mmio.o drivers/misc/pvpanic/pvpanic-mmio.mod.o;  true

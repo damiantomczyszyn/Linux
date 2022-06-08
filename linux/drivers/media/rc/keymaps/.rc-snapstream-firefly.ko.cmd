@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-snapstream-firefly.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-snapstream-firefly.ko drivers/media/rc/keymaps/rc-snapstream-firefly.o drivers/media/rc/keymaps/rc-snapstream-firefly.mod.o;  true

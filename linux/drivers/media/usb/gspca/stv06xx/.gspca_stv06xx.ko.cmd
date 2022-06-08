@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/gspca/stv06xx/gspca_stv06xx.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/gspca/stv06xx/gspca_stv06xx.ko drivers/media/usb/gspca/stv06xx/gspca_stv06xx.o drivers/media/usb/gspca/stv06xx/gspca_stv06xx.mod.o;  true

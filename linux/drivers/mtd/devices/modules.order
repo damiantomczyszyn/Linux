@@ -1,0 +1,7 @@
+drivers/mtd/devices/docg3.ko
+drivers/mtd/devices/slram.ko
+drivers/mtd/devices/phram.ko
+drivers/mtd/devices/pmc551.ko
+drivers/mtd/devices/mtdram.ko
+drivers/mtd/devices/block2mtd.ko
+drivers/mtd/devices/mchp48l640.ko

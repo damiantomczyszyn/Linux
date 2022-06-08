@@ -1,0 +1,1 @@
+cmd_drivers/mtd/devices/modules.order := {   echo drivers/mtd/devices/docg3.ko;   echo drivers/mtd/devices/slram.ko;   echo drivers/mtd/devices/phram.ko;   echo drivers/mtd/devices/pmc551.ko;   echo drivers/mtd/devices/mtdram.ko;   echo drivers/mtd/devices/block2mtd.ko;   echo drivers/mtd/devices/mchp48l640.ko; :; } | awk '!x[$$0]++' - > drivers/mtd/devices/modules.order

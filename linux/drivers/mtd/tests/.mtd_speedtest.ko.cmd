@@ -1,0 +1,1 @@
+cmd_drivers/mtd/tests/mtd_speedtest.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/tests/mtd_speedtest.ko drivers/mtd/tests/mtd_speedtest.o drivers/mtd/tests/mtd_speedtest.mod.o;  true

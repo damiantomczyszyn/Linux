@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-encore-enltv.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-encore-enltv.ko drivers/media/rc/keymaps/rc-encore-enltv.o drivers/media/rc/keymaps/rc-encore-enltv.mod.o;  true

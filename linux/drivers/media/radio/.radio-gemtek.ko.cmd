@@ -1,0 +1,1 @@
+cmd_drivers/media/radio/radio-gemtek.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-gemtek.ko drivers/media/radio/radio-gemtek.o drivers/media/radio/radio-gemtek.mod.o;  true

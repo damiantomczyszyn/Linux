@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-lme2510.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-lme2510.ko drivers/media/rc/keymaps/rc-lme2510.o drivers/media/rc/keymaps/rc-lme2510.mod.o;  true

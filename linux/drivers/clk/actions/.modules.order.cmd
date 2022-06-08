@@ -1,0 +1,1 @@
+cmd_drivers/media/i2c/vs6624.o := gcc -Wp,-MMD,drivers/media/i2c/.vs6624.o.d -nostdinc -I./arch/x86/inclu

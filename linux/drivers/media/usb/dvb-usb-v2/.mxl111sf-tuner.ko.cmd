@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.ko drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.o drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.mod.o;  true

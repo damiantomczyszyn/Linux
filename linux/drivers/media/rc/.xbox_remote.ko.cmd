@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/xbox_remote.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/xbox_remote.ko drivers/media/rc/xbox_remote.o drivers/media/rc/xbox_remote.mod.o;  true

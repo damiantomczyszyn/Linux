@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-hisi-poplar.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-hisi-poplar.ko drivers/media/rc/keymaps/rc-hisi-poplar.o drivers/media/rc/keymaps/rc-hisi-poplar.mod.o;  true

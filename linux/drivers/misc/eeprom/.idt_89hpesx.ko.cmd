@@ -1,0 +1,1 @@
+cmd_drivers/misc/eeprom/idt_89hpesx.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/misc/eeprom/idt_89hpesx.ko drivers/misc/eeprom/idt_89hpesx.o drivers/misc/eeprom/idt_89hpesx.mod.o;  true

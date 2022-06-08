@@ -1,0 +1,3 @@
+eo/edid.h \
+    $(wildcard include/config/X86) \
+  include/uapi/vi

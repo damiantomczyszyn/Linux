@@ -1,0 +1,2 @@
+g/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
+    $(wild

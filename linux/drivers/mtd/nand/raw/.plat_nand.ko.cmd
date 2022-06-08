@@ -1,0 +1,1 @@
+cmd_drivers/mtd/nand/raw/plat_nand.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/nand/raw/plat_nand.ko drivers/mtd/nand/raw/plat_nand.o drivers/mtd/nand/raw/plat_nand.mod.o;  true

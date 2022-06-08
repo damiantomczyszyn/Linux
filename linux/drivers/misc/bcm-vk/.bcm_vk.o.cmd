@@ -1,0 +1,1 @@
+cmd_drivers/misc/bcm-vk/bcm_vk.o := ld -m elf_i386   -r -o drivers/misc/bcm-vk/bcm_vk.o drivers/misc/bcm-vk/bcm_vk_dev.o drivers/misc/bcm-vk/bcm_vk_msg.o drivers/misc/bcm-vk/bcm_vk_sg.o drivers/misc/bcm-vk/bcm_vk_tty.o

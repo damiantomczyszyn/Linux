@@ -1,0 +1,15 @@
+drivers/mtd/maps/map_funcs.ko
+drivers/mtd/maps/l440gx.ko
+drivers/mtd/maps/amd76xrom.ko
+drivers/mtd/maps/esb2rom.ko
+drivers/mtd/maps/ichxrom.ko
+drivers/mtd/maps/ck804xrom.ko
+drivers/mtd/maps/physmap.ko
+drivers/mtd/maps/pcmciamtd.ko
+drivers/mtd/maps/sbc_gxx.ko
+drivers/mtd/maps/scx200_docflash.ko
+drivers/mtd/maps/pci.ko
+drivers/mtd/maps/nettel.ko
+drivers/mtd/maps/scb2_flash.ko
+drivers/mtd/maps/plat-ram.ko
+drivers/mtd/maps/intel_vr_nor.ko

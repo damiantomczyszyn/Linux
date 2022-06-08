@@ -1,0 +1,1 @@
+include/config/HAVE_ALIGNED_S

@@ -1,0 +1,23 @@
+d include/config/NO_HZ_FULL) \
+    $(wildcard include/config/POSIX_CPUTIMERS) \
+    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
+    $(wildcard include/config/KEYS) \
+    $(wildcard include/config/SYSVIPC) \
+    $(wildcard include/config/DETECT_HUNG_TASK) \
+    $(wildcard include/config/IO_URING) \
+    $(wildcard include/config/AUDIT) \
+    $(wildcard include/config/AUDITSYSCALL) \
+    $(wildcard include/config/DEBUG_MUTEXES) \
+    $(wildcard include/config/TRACE_IRQFLAGS) \
+    $(wildcard include/config/UBSAN) \
+    $(wildcard include/config/UBSAN_TRAP) \
+    $(wildcard include/config/COMPACTION) \
+    $(wildcard include/config/TASK_XACCT) \
+    $(wildcard include/config/CPUSETS) \
+    $(wildcard include/config/X86_CPU_RESCTRL) \
+    $(wildcard include/config/FUTEX) \
+    $(wildcard include/config/COMPAT) \
+    $(wildcard include/config/PERF_EVENTS) \
+    $(wildcard include/config/DEBUG_PREEMPT) \
+    $(wildcard include/config/NUMA) \
+    $(wildcard include/config/NUMA

@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-anysee.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-anysee.ko drivers/media/rc/keymaps/rc-anysee.o drivers/media/rc/keymaps/rc-anysee.mod.o;  true

@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-gadmei-rm008z.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-gadmei-rm008z.ko drivers/media/rc/keymaps/rc-gadmei-rm008z.o drivers/media/rc/keymaps/rc-gadmei-rm008z.mod.o;  true

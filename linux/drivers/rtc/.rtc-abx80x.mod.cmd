@@ -1,0 +1,1 @@
+cmd_drivers/media/i2c/vpx3220.o := gcc -Wp,-MMD,drivers/media/i2c/.vpx3220.o.d -nostdinc -I./arch/x86/incl

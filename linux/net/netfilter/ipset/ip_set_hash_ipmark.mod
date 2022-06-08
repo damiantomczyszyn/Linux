@@ -1,0 +1,1 @@
+(wildcard include/config/SPLIT_PTLOCK_CPUS

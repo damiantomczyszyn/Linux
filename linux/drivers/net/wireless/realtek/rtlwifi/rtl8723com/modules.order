@@ -1,0 +1,2 @@
+ildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
+  arch/x86/incl

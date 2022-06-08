@@ -1,0 +1,4 @@
+drivers/misc/mei/mei.ko
+drivers/misc/mei/mei-me.ko
+drivers/misc/mei/mei-txe.ko
+drivers/misc/mei/hdcp/mei_hdcp.ko

@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/rc-core.o := ld -m elf_i386   -r -o drivers/media/rc/rc-core.o drivers/media/rc/rc-main.o drivers/media/rc/rc-ir-raw.o drivers/media/rc/lirc_dev.o drivers/media/rc/keymaps/rc-cec.o

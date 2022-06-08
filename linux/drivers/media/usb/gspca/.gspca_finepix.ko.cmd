@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/gspca/gspca_finepix.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/gspca/gspca_finepix.ko drivers/media/usb/gspca/gspca_finepix.o drivers/media/usb/gspca/gspca_finepix.mod.o;  true

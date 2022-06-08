@@ -1,0 +1,1 @@
+cmd_drivers/misc/altera-stapl/altera-stapl.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/misc/altera-stapl/altera-stapl.ko drivers/misc/altera-stapl/altera-stapl.o drivers/misc/altera-stapl/altera-stapl.mod.o;  true

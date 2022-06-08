@@ -1,0 +1,1 @@
+cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/

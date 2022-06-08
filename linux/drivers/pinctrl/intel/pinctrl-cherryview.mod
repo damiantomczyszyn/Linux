@@ -1,0 +1,2 @@
+config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
+   

@@ -1,0 +1,1 @@
+cmd_drivers/media/i2c/tvp7002.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp7002.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -

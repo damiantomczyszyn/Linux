@@ -1,0 +1,1 @@
+cmd_drivers/mtd/nand/raw/diskonchip.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/nand/raw/diskonchip.ko drivers/mtd/nand/raw/diskonchip.o drivers/mtd/nand/raw/diskonchip.mod.o;  true

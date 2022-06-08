@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/usbtv/usbtv.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/usbtv/usbtv.ko drivers/media/usb/usbtv/usbtv.o drivers/media/usb/usbtv/usbtv.mod.o;  true

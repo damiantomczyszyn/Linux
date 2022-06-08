@@ -1,0 +1,1 @@
+cmd_drivers/media/radio/radio-sf16fmi.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-sf16fmi.ko drivers/media/radio/radio-sf16fmi.o drivers/media/radio/radio-sf16fmi.mod.o;  true

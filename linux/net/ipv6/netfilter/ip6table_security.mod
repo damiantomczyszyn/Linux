@@ -1,0 +1,2 @@
+enum bfs_result
+check_redundant(struct h

@@ -1,0 +1,4 @@
+
+  arch/x86/include/asm/msr-index.h \
+  arch/x86/include/asm/cpumask.h \
+  include

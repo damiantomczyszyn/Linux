@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/gspca/gl860/gspca_gl860.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/gspca/gl860/gspca_gl860.ko drivers/media/usb/gspca/gl860/gspca_gl860.o drivers/media/usb/gspca/gl860/gspca_gl860.mod.o;  true

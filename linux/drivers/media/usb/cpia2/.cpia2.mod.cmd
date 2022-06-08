@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/cpia2/cpia2.mod := { echo  drivers/media/usb/cpia2/cpia2_v4l.o drivers/media/usb/cpia2/cpia2_usb.o drivers/media/usb/cpia2/cpia2_core.o;  echo; } > drivers/media/usb/cpia2/cpia2.mod

@@ -1,0 +1,47 @@
+nfig/FILE_LOCKING) \
+    $(wildcard include/config/FSNOTIFY) \
+    $(wildcard include/config/FS_ENCRYPTION) \
+    $(wildcard include/config/FS_VERITY) \
+    $(wildcard include/config/EPOLL) \
+    $(wildcard include/config/UNICODE) \
+    $(wildcard include/config/QUOTA) \
+    $(wildcard include/config/FS_DAX) \
+    $(wildcard include/config/BLOCK) \
+    $(wildcard include/config/MIGRATION) \
+  include/linux/wait_bit.h \
+  include/linux/kdev_t.h \
+  include/uapi/linux/kdev_t.h \
+  include/linux/dcache.h \
+  include/linux/rculist_bl.h \
+  include/linux/list_bl.h \
+  include/linux/bit_spinlock.h \
+  include/linux/lockref.h \
+    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
+  include/linux/stringhash.h \
+    $(wildcard include/config/DCACHE_WORD_ACCESS) \
+  include/linux/hash.h \
+    $(wildcard include/config/HAVE_ARCH_HASH) \
+  include/linux/path.h \
+  include/linux/list_lru.h \
+  include/linux/shrinker.h \
+  include/linux/capability.h \
+  include/uapi/linux/capability.h \
+  include/linux/semaphore.h \
+  include/linux/fcntl.h \
+    $(wildcard include/config/ARCH_32BIT_OFF_T) \
+  include/uapi/linux/fcntl.h \
+  arch/x86/include/generated/uapi/asm/fcntl.h \
+  include/uapi/asm-generic/fcntl.h \
+  include/uapi/linux/openat2.h \
+  include/linux/migrate_mode.h \
+  include/linux/percpu-rwsem.h \
+  include/linux/rcuwait.h \
+  include/linux/sched/signal.h \
+    $(wildcard include/config/SCHED_AUTOGROUP) \
+    $(wildcard include/config/BSD_PROCESS_ACCT) \
+    $(wildcard include/config/TASKSTATS) \
+    $(wildcard include/config/STACK_GROWSUP) \
+  include/linux/signal.h \
+    $(wildcard include/config/DYNAMIC_SIGFRAME) \
+  include/linux/sched/jobctl.h \
+  

@@ -1,0 +1,1 @@
+cmd_kernel/bpf/cgroup.o := gcc

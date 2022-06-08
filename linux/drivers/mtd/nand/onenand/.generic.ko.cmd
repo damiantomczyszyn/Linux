@@ -1,0 +1,1 @@
+cmd_drivers/mtd/nand/onenand/generic.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/nand/onenand/generic.ko drivers/mtd/nand/onenand/generic.o drivers/mtd/nand/onenand/generic.mod.o;  true

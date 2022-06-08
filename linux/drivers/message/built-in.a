@@ -1,0 +1,17 @@
+!<thin>
+//                                              122       `
+fusion/mptbase.o/
+fusion/mptscsih.o/
+fusion/mptspi.o/
+fusion/mptfc.o/
+fusion/mptsas.o/
+fusion/mptctl.o/
+fusion/mptlan.o/
+
+/0              0           0     0     644     81236     `
+/18             0           0     0     644     33276     `
+/37             0           0     0     644     20252     `
+/54             0           0     0     644     17308     `
+/70             0           0     0     644     48732     `
+/87             0           0     0     644     28644     `
+/104            0           0     0     644     17556     `

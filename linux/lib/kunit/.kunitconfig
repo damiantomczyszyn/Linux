@@ -1,0 +1,3 @@
+
+			       &hlock_class(prev)->locks_after,
+			       next->acq

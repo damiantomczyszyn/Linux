@@ -1,0 +1,2 @@
+BUG_NMI_SELFTEST) \
+  incl

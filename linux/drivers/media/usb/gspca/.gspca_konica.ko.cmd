@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/gspca/gspca_konica.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/gspca/gspca_konica.ko drivers/media/usb/gspca/gspca_konica.o drivers/media/usb/gspca/gspca_konica.mod.o;  true

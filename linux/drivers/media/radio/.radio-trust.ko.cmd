@@ -1,0 +1,1 @@
+cmd_drivers/media/radio/radio-trust.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-trust.ko drivers/media/radio/radio-trust.o drivers/media/radio/radio-trust.mod.o;  true

@@ -1,0 +1,1 @@
+RRAY_SIZE(lock_classe

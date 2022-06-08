@@ -1,0 +1,1 @@
+cmd_drivers/mtd/maps/intel_vr_nor.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/maps/intel_vr_nor.ko drivers/mtd/maps/intel_vr_nor.o drivers/mtd/maps/intel_vr_nor.mod.o;  true

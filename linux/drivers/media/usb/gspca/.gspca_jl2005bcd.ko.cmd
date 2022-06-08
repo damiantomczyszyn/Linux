@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/gspca/gspca_jl2005bcd.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/gspca/gspca_jl2005bcd.ko drivers/media/usb/gspca/gspca_jl2005bcd.o drivers/media/usb/gspca/gspca_jl2005bcd.mod.o;  true

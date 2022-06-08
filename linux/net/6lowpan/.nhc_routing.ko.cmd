@@ -1,0 +1,10 @@
+ */
+
+static inline void check_data_structures(void) { }
+
+#endif /* CONFIG_DEBUG_LOCKDEP */
+
+static void init_chain_block_buckets(void);
+
+/*
+ * Initialize the lock_classes[] array eleme

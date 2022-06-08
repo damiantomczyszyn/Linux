@@ -1,0 +1,1 @@
+e/config/NO_GENERIC_PCI_I

@@ -1,0 +1,1 @@
+    $(wildcard include/config/HIGH_RES_TIMER

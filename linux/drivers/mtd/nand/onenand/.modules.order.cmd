@@ -1,0 +1,1 @@
+cmd_drivers/mtd/nand/onenand/modules.order := {   echo drivers/mtd/nand/onenand/onenand.ko;   echo drivers/mtd/nand/onenand/generic.ko; :; } | awk '!x[$$0]++' - > drivers/mtd/nand/onenand/modules.order

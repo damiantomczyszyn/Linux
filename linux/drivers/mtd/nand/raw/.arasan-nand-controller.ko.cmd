@@ -1,0 +1,1 @@
+cmd_drivers/mtd/nand/raw/arasan-nand-controller.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/nand/raw/arasan-nand-controller.ko drivers/mtd/nand/raw/arasan-nand-controller.o drivers/mtd/nand/raw/arasan-nand-controller.mod.o;  true

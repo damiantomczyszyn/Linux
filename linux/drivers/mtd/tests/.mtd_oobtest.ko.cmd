@@ -1,0 +1,1 @@
+cmd_drivers/mtd/tests/mtd_oobtest.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/tests/mtd_oobtest.ko drivers/mtd/tests/mtd_oobtest.o drivers/mtd/tests/mtd_oobtest.mod.o;  true

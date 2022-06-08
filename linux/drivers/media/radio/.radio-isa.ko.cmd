@@ -1,0 +1,1 @@
+cmd_drivers/media/radio/radio-isa.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-isa.ko drivers/media/radio/radio-isa.o drivers/media/radio/radio-isa.mod.o;  true

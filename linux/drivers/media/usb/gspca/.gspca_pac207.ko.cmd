@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/gspca/gspca_pac207.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/usb/gspca/gspca_pac207.ko drivers/media/usb/gspca/gspca_pac207.o drivers/media/usb/gspca/gspca_pac207.mod.o;  true

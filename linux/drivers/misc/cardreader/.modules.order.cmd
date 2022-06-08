@@ -1,0 +1,1 @@
+cmd_drivers/misc/cardreader/modules.order := {   echo drivers/misc/cardreader/alcor_pci.ko;   echo drivers/misc/cardreader/rtsx_pci.ko;   echo drivers/misc/cardreader/rtsx_usb.ko; :; } | awk '!x[$$0]++' - > drivers/misc/cardreader/modules.order

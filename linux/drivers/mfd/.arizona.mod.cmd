@@ -1,0 +1,1 @@
+cmd_drivers/mfd/arizona.mod := { echo  drivers/mfd/arizona-core.o drivers/mfd/arizona-irq.o drivers/mfd/wm5102-tables.o drivers/mfd/wm5110-tables.o drivers/mfd/wm8997-tables.o;  echo; } > drivers/mfd/arizona.mod

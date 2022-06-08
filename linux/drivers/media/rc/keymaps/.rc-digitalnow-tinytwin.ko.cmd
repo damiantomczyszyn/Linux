@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-digitalnow-tinytwin.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-digitalnow-tinytwin.ko drivers/media/rc/keymaps/rc-digitalnow-tinytwin.o drivers/media/rc/keymaps/rc-digitalnow-tinytwin.mod.o;  true

@@ -1,0 +1,99 @@
+_BITMAP(list_entries_in_use, MAX_LOCKDEP_ENTRIES);
+
+/*
+ * All data structures here are protected by the global debug_lock.
+ *
+ * nr_lock_classes is the number of elements of lock_classes[] that is
+ * in use.
+ */
+#define KEYHASH_BITS		(MAX_LOCKDEP_KEYS_BITS - 1)
+#define KEYHASH_SIZE		(1UL << KEYHASH_BITS)
+static struct hlist_head lock_keys_hash[KEYHASH_SIZE];
+unsigned long nr_lock_classes;
+unsigned long nr_zapped_classes;
+unsigned long max_lock_class_idx;
+struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
+DECLARE_BITMAP(lock_classes_in_use, MAX_LOCKDEP_KEYS);
+
+static inline struct lock_class *hlock_class(struct held_lock *hlock)
+{
+	unsigned int class_idx = hlock->class_idx;
+
+	/* Don't re-read hlock->class_idx, can't use READ_ONCE() on bitfield */
+	barrier();
+
+	if (!test_bit(class_idx, lock_classes_in_use)) {
+		/*
+		 * Someone passed in garbage, we give up.
+		 */
+		DEBUG_LOCKS_WARN_ON(1);
+		return NULL;
+	}
+
+	/*
+	 * At this point, if the passed hlock->class_idx is still garbage,
+	 * we just have to live with it
+	 */
+	return lock_classes + class_idx;
+}
+
+#ifdef CONFIG_LOCK_STAT
+static DEFINE_PER_CPU(struct lock_class_stats[MAX_LOCKDEP_KEYS], cpu_lock_stats);
+
+static inline u64 lockstat_clock(void)
+{
+	return local_clock();
+}
+
+static int lock_point(unsigned long points[], unsigned long ip)
+{
+	int i;
+
+	for (i = 0; i < LOCKSTAT_POINTS; i++) {
+		if (points[i] == 0) {
+			points[i] = ip;
+			break;
+		}
+		if (points[i] == ip)
+			break;
+	}
+
+	return i;
+}
+
+static void lock_time_inc(struct lock_time *lt, u64 time)
+{
+	if (time > lt->max)
+		lt->max = time;
+
+	if (time < lt->min || !lt->nr)
+		lt->min = time;
+
+	lt->total += time;
+	lt->nr++;
+}
+
+static inline void lock_time_add(struct lock_time *src, struct lock_time *dst)
+{
+	if (!src->nr)
+		return;
+
+	if (src->max > dst->max)
+		dst->max = src->max;
+
+	if (src->min < dst->min || !dst->nr)
+		dst->min = src->min;
+
+	dst->total += src->total;
+	dst->nr += src->nr;
+}
+
+struct lock_class_stats lock_stats(struct lock_class *class)
+{
+	struct lock_class_stats stats;
+	int cpu, i;
+
+	memset(&stats, 0, sizeof(struct lock_class_stats));
+	for_each_possible_cpu(cpu) {
+		struct lock_class_stats *pcs =
+			&per_cpu(cpu_lock_stats

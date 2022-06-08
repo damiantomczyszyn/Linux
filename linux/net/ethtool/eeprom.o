@@ -1,0 +1,137 @@
+_LOCK_DEPTH))
+		return 0;
+
+	class_idx = class - lock_classes;
+
+	if (depth) { /* we're holding locks */
+		hlock = curr->held_locks + depth - 1;
+		if (hlock->class_idx == class_idx && nest_lock) {
+			if (!references)
+				references++;
+
+			if (!hlock->references)
+				hlock->references++;
+
+			hlock->references += references;
+
+			/* Overflow */
+			if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
+				return 0;
+
+			return 2;
+		}
+	}
+
+	hlock = curr->held_locks + depth;
+	/*
+	 * Plain impossible, we just registered it and checked it weren't no
+	 * NULL like.. I bet this mushroom I ate was good!
+	 */
+	if (DEBUG_LOCKS_WARN_ON(!class))
+		return 0;
+	hlock->class_idx = class_idx;
+	hlock->acquire_ip = ip;
+	hlock->instance = lock;
+	hlock->nest_lock = nest_lock;
+	hlock->irq_context = task_irq_context(curr);
+	hlock->trylock = trylock;
+	hlock->read = read;
+	hlock->check = check;
+	hlock->hardirqs_off = !!hardirqs_off;
+	hlock->references = references;
+#ifdef CONFIG_LOCK_STAT
+	hlock->waittime_stamp = 0;
+	hlock->holdtime_stamp = lockstat_clock();
+#endif
+	hlock->pin_count = pin_count;
+
+	if (check_wait_context(curr, hlock))
+		return 0;
+
+	/* Initialize the lock usage bit */
+	if (!mark_usage(curr, hlock, check))
+		return 0;
+
+	/*
+	 * Calculate the chain hash: it's the combined hash of all the
+	 * lock keys along the dependency chain. We save the hash value
+	 * at every step so that we can get the current hash easily
+	 * after unlock. The chain hash is then used to cache dependency
+	 * results.
+	 *
+	 * The 'key ID' is what is the most compact key value to drive
+	 * the hash, not class->key.
+	 */
+	/*
+	 * Whoops, we did it again.. class_idx is invalid.
+	 */
+	if (DEBUG_LOCKS_WARN_ON(!test_bit(class_idx, lock_classes_in_use)))
+		return 0;
+
+	chain_key = curr->curr_chain_key;
+	if (!depth) {
+		/*
+		 * How can we have a chain hash when we ain't got no keys?!
+		 */
+		if (DEBUG_LOCKS_WARN_ON(chain_key != INITIAL_CHAIN_KEY))
+			return 0;
+		chain_head = 1;
+	}
+
+	hlock->prev_chain_key = chain_key;
+	if (separate_irq_context(curr, hlock)) {
+		chain_key = INITIAL_CHAIN_KEY;
+		chain_head = 1;
+	}
+	chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
+
+	if (nest_lock && !__lock_is_held(nest_lock, -1)) {
+		print_lock_nested_lock_not_held(curr, hlock, ip);
+		return 0;
+	}
+
+	if (!debug_locks_silent) {
+		WARN_ON_ONCE(depth && !hlock_class(hlock - 1)->key);
+		WARN_ON_ONCE(!hlock_class(hlock)->key);
+	}
+
+	if (!validate_chain(curr, hlock, chain_head, chain_key))
+		return 0;
+
+	curr->curr_chain_key = chain_key;
+	curr->lockdep_depth++;
+	check_chain_key(curr);
+#ifdef CONFIG_DEBUG_LOCKDEP
+	if (unlikely(!debug_locks))
+		return 0;
+#endif
+	if (unlikely(curr->lockdep_depth >= MAX_LOCK_DEPTH)) {
+		debug_locks_off();
+		print_lockdep_off("BUG: MAX_LOCK_DEPTH too low!");
+		printk(KERN_DEBUG "depth: %i  max: %lu!\n",
+		       curr->lockdep_depth, MAX_LOCK_DEPTH);
+
+		lockdep_print_held_locks(current);
+		debug_show_all_locks();
+		dump_stack();
+
+		return 0;
+	}
+
+	if (unlikely(curr->lockdep_depth > max_lockdep_depth))
+		max_lockdep_depth = curr->lockdep_depth;
+
+	return 1;
+}
+
+static void print_unlock_imbalance_bug(struct task_struct *curr,
+				       struct lockdep_map *lock,
+				       unsigned long ip)
+{
+	if (!debug_locks_off())
+		return;
+	if (debug_locks_silent)
+		return;
+
+	pr_warn("\n");
+	pr_warn("========================

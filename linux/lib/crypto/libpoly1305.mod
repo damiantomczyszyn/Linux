@@ -1,0 +1,1 @@
+cmd_kernel/irq/cpuhotplug.o := gcc -Wp,-MMD,kernel/ir

@@ -1,0 +1,1 @@
+cmd_drivers/message/fusion/built-in.a := echo >/dev/null; rm -f drivers/message/fusion/built-in.a; ar cDPrST drivers/message/fusion/built-in.a drivers/message/fusion/mptbase.o drivers/message/fusion/mptscsih.o drivers/message/fusion/mptspi.o drivers/message/fusion/mptfc.o drivers/message/fusion/mptsas.o drivers/message/fusion/mptctl.o drivers/message/fusion/mptlan.o

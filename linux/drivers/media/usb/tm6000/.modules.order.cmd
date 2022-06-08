@@ -1,0 +1,1 @@
+cmd_drivers/media/usb/tm6000/modules.order := {   echo drivers/media/usb/tm6000/tm6000.ko;   echo drivers/media/usb/tm6000/tm6000-alsa.ko;   echo drivers/media/usb/tm6000/tm6000-dvb.ko; :; } | awk '!x[$$0]++' - > drivers/media/usb/tm6000/modules.order

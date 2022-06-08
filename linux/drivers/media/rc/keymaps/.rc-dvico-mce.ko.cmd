@@ -1,0 +1,1 @@
+cmd_drivers/media/rc/keymaps/rc-dvico-mce.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/rc/keymaps/rc-dvico-mce.ko drivers/media/rc/keymaps/rc-dvico-mce.o drivers/media/rc/keymaps/rc-dvico-mce.mod.o;  true

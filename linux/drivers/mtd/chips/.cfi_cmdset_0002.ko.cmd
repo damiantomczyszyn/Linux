@@ -1,0 +1,1 @@
+cmd_drivers/mtd/chips/cfi_cmdset_0002.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mtd/chips/cfi_cmdset_0002.ko drivers/mtd/chips/cfi_cmdset_0002.o drivers/mtd/chips/cfi_cmdset_0002.mod.o;  true
